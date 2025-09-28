@@ -1,0 +1,335 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Tipos de Bases de Datos</title><link rel="stylesheet" href="styles.css">
+<style>
+
+/* styles.css - shared across all pages */
+:root{
+  --orange: #ff7a2d;
+  --dark: #22303f;
+  --muted: #6c7a86;
+  --bg: #ffffff;
+  --card: #f8fafb;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, -apple-system, Roboto, 'Segoe UI', Arial; margin:0; color:var(--dark); background:var(--bg); line-height:1.5;}
+.container{max-width:1100px; margin:0 auto; padding:24px;}
+.header{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0;}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand h1{font-size:20px; margin:0; color:var(--dark);}
+.nav{display:flex; gap:12px; align-items:center;}
+.nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px;}
+.nav a:hover{background:#fff3ea; color:var(--dark);}
+
+.search-wrap{position:relative; flex:1; max-width:520px;}
+#glossary-search{width:100%; padding:10px 14px; border-radius:12px; border:1px solid #e6e9ec; box-shadow:0 1px 0 rgba(0,0,0,0.02); font-size:14px;}
+#search-results{position:absolute; left:0; right:0; top:46px; background:var(--card); border:1px solid #eee; border-radius:8px; max-height:320px; overflow:auto; z-index:40; display:none;}
+.result-item{padding:10px 12px; cursor:pointer; border-bottom:1px dashed rgba(0,0,0,0.03);}
+.result-item:last-child{border-bottom:none;}
+.result-item:hover{background:#fff3ea;}
+.result-meta{font-size:12px; color:var(--muted); margin-top:4px;}
+.hero{display:flex; align-items:center; gap:24px; padding:28px 0;}
+.hero h2{margin:0; font-size:28px; color:var(--dark);}
+.hero p.lead{margin:8px 0 0; color:var(--muted);}
+.btn-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;}
+.btn{background:var(--orange); color:white; padding:10px 14px; border-radius:12px; text-decoration:none; display:inline-block; font-weight:600; box-shadow:0 6px 18px rgba(255,122,45,0.08);}
+.grid{display:grid; grid-template-columns:1fr 320px; gap:22px; margin-top:28px;}
+.card{background:var(--card); padding:16px; border-radius:12px; box-shadow:0 6px 18px rgba(34,48,63,0.04);}
+.footer{padding:24px 0; color:var(--muted); font-size:14px; text-align:center; margin-top:36px;}
+
+/* Page content */
+.content h3{margin-top:0;}
+.section-image{width:100%; height:220px; background:linear-gradient(135deg,#fff3ea,#fffbf7); display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--dark);}
+
+.glossary-highlight{background:rgba(255,122,45,0.15); padding:2px 4px; border-radius:4px; transition:background 0.3s;}
+
+/* Responsive */
+@media (max-width:900px){
+  .hero{flex-direction:column; align-items:flex-start;}
+  .grid{grid-template-columns:1fr;}
+  #search-results{top:48px;}
+}
+
+</style>
+</head><body>
+<header class="container header"><div class="brand"><a href="index.html" style="text-decoration:none;color:inherit;"><img src="logo.svg" alt="Logo" width="36" height="36" style="border-radius:8px;background:var(--orange);"></a><h1 style="font-size:18px;margin:0;"><a href="index.html" style="text-decoration:none;color:inherit;">Conceptos fundamentales en Bases de Datos</a></h1></div></header>
+<main class='container'><h2 style='margin-top:8px'>Tipos de Bases de Datos</h2><div class='content'>
+<section id='relacionales' class='card' style='margin-top:12px;'><h3>Relacionales (SQL)</h3>
+<p>Las bases de datos relacionales se fundamentan en el modelo relacional propuesto por E. F. Codd y organizan la información en tablas (relaciones) compuestas por filas (tuplas) y columnas (atributos). Cada tabla representa un conjunto de entidades del mismo tipo y las relaciones entre tablas se modelan mediante claves primarias (PK) y claves foráneas (FK), lo que facilita imponer integridad referencial y normalizar esquemas para evitar redundancias. Las operaciones sobre datos en modelos relacionales se expresan en lenguajes declarativos como SQL, que permite seleccionar, proyectar, unir y transformar datos de forma poderosa y legible; gracias a esto, RDBMS (sistemas gestores relacionales) como Oracle, PostgreSQL, MySQL y SQL Server son todavía hoy el pilar de aplicaciones empresariales donde la consistencia y las garantías transaccionales (ACID) son críticas.<br> 
+<br>
+En la práctica, las bases relacionales ofrecen fuerte consistencia y mecanismos maduros para control de concurrencia, recuperación y optimización de consultas (índices, planes de ejecución). No obstante, su escalado horizontal puede ser más complejo que en algunas alternativas NoSQL —aunque hoy existen soluciones y extensiones (sharding, réplicas, bases de datos distribuidas basadas en SQL) que mitigan estas limitaciones—; por eso la elección de un RDBMS suele depender de requisitos de integridad, consultas complejas y compatibilidad con transacciones. 
+<br>
+<br>
+Referencia (APA 7) — Relacionales (SQL):
+Oracle. (2021). What is a relational database? Oracle. https://www.oracle.com/database/what-is-a-relational-database/<br>
+<br>
+Codd, E. F. (1970). A relational model of data for large shared data banks. Communications of the ACM, 13(6), 377–387. https://doi.org/10.1145/362384.362685</p>
+</section>
+<section id='nosql' class='card' style='margin-top:12px;'><h3>No relacionales (NoSQL)</h3>
+<p>Las bases de datos NoSQL aparecieron para dar respuesta a demandas de flexibilidad de esquema, alta escalabilidad y latencias bajas en entornos web y de Big Data. NoSQL no es un único modelo, sino una familia de enfoques: document stores (p. ej., MongoDB) que almacenan documentos JSON/BSON con esquemas flexibles; key–value stores (p. ej., Redis) que proporcionan acceso ultrarrápido a valores indexados por clave; wide-column (column-family) (p. ej., Cassandra) orientadas a consultas analíticas sobre grandes volúmenes y particionamiento; y graph databases (p. ej., Neo4j) optimizadas para relaciones complejas y travesías de grafos. Estas opciones permiten modelar estructuras heterogéneas y escalar horizontalmente con más facilidad que los RDBMS tradicionales, sacrificando en muchos casos garantías estrictas de consistencia inmediata en favor de disponibilidad y particionamiento. 
+<br>
+<br>
+Desde el punto de vista del diseño, NoSQL facilita iteraciones rápidas (esquema evolutivo), consultas geográficamente distribuidas y rendimiento en lecturas/escrituras masivas; sin embargo, también exige que el desarrollador gestione explícitamente aspectos que en RDBMS quedan cubiertos por restricciones y transacciones (por ejemplo, mantener integridad entre documentos o diseñar compensaciones ante inconsistencias temporales). Por eso la adopción de NoSQL suele acompañarse de patrones arquitectónicos (event sourcing, CQRS, denormalización controlada) y herramientas que gestionan replicación y consistencia eventual según las necesidades del sistema. 
+<br>
+<br>
+Referencia (APA 7) — No relacionales (NoSQL):
+MongoDB, Inc. (s. f.). What Is NoSQL? NoSQL Databases Explained. MongoDB. https://www.mongodb.com/resources/basics/databases/nosql-explained
+<br>
+AltexSoft. (2024). NoSQL databases explained: types and use cases. AltexSoft. https://www.altexsoft.com/blog/nosql-databases/</p>
+</section>
+<section id='otras' class='card' style='margin-top:12px;'><h3>Distribuidas y Big Data</h3>
+<p>Los sistemas de datos distribuidos y las plataformas de Big Data están diseñados para almacenar y procesar volúmenes masivos de información repartida en clústeres de máquinas. Un ejemplo paradigmático es el ecosistema Apache Hadoop, que combina HDFS (un sistema de archivos distribuido tolerante a fallos) con modelos de procesamiento por lotes (MapReduce) y otros proyectos asociados (YARN, Hive, HBase) para manejar petabytes de datos en hardware commodity. Estas arquitecturas aprovechan la colocación de datos y el paralelismo masivo para alcanzar escalabilidad horizontal y tolerancia a fallos, cambiando el coste computacional de análisis grandes a un paradigma distribuido. 
+<br>
+<br>
+En el ámbito de bases de datos distribuidas que combinan escalabilidad con fuertes garantías ACID y transaccionales a gran escala, trabajos e implementaciones como Google Spanner introdujeron ideas clave (replicación sincronizada, multiversión y la API TrueTime para orden global) que permiten transacciones con consistencia externa en entornos geográficamente dispersos. Estas técnicas demostraron que es posible ofrecer transacciones distribuidas con latencias y complejidad razonables, inspirando proyectos comerciales y open-source (por ejemplo, CockroachDB) que persiguen ofrecer propiedades similares a Spanner en infraestructuras más accesibles. En resumen, el ecosistema Big Data y las bases de datos distribuidas plantean un conjunto de trade-offs (consistencia vs. disponibilidad vs. latencia) y requieren diseño cuidadoso de particionamiento, replicación, tolerancia a fallos y mecanismos de recuperación. 
+<br>
+<br>
+Referencia (APA 7) — Distribuidas y Big Data:
+Apache Software Foundation. (s. f.). Apache Hadoop. https://hadoop.apache.org/
+<br>
+Corbett, J. C., et al. (2012). Spanner: Google’s globally-distributed database. Proceedings of OSDI 2012. https://www.usenix.org/system/files/conference/osdi12/osdi12-final-16.pdf</p>
+</section>
+<p style='margin-top:18px;'><a class='btn' href='index.html'>&larr; Volver al inicio</a></p>
+</div></main><footer class='footer'><div class='container'>Glosario — Proyecto educativo</div></footer>
+<script>const SEARCH_INDEX = [
+  {
+    "page": "conceptos-generales.html",
+    "id": "definiciones",
+    "title": "Definiciones clave",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "<strong>Dato</strong> → Representación de un hecho, valor o característica (ej: \"25\", \"México\"). <strong>Información</strong> → Conjunto de datos procesados que tienen significado. <strong>Base de Datos (BD)</strong> → C"
+  },
+  {
+    "page": "conceptos-generales.html",
+    "id": "usuarios",
+    "title": "Usuarios",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "Administrador de Base de Datos (DBA), Usuarios finales, Desarrolladores."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "jerarquico",
+    "title": "Modelo jerárquico",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Estructura tipo árbol donde cada registro tiene un único padre; usado en sistemas antiguos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "red",
+    "title": "Modelo de red",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Permite relaciones más complejas entre registros (grafos)."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "relacional",
+    "title": "Modelo relacional",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo más usado: los datos se organizan en tablas (relaciones) con filas y columnas."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "objetos",
+    "title": "Modelo orientado a objetos",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Combina ideas de programación orientada a objetos con almacenamiento de datos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "er",
+    "title": "Modelo entidad-relación (ER)",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo conceptual usado para representar entidades, atributos y relaciones antes del diseño físico."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tabla",
+    "title": "Tabla (relación)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Conjunto de datos organizados en filas y columnas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tupla",
+    "title": "Tupla (fila)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Registro único en la tabla."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "atributo",
+    "title": "Atributo (columna)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Característica que describe una entidad."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "pk_fk",
+    "title": "Claves (PK y FK)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Clave primaria (PK) identifica registros; Clave foránea (FK) relaciona tablas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "indices",
+    "title": "Índices y vistas",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Índice: estructura para acelerar consultas. Vista: consulta almacenada que muestra datos personalizados."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "entidad",
+    "title": "Entidad y relación",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Entidad → Objeto del mundo real representado en la BD. Relación → Asociación entre entidades."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "atributo2",
+    "title": "Atributo",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Propiedad de una entidad o relación."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "cardinalidad",
+    "title": "Cardinalidad",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Relaciones: 1:1, 1:N, N:M."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "normalizacion",
+    "title": "Normalización",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Proceso para organizar los datos y evitar redundancias (1FN, 2FN, 3FN, BCNF)."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "esquema",
+    "title": "Esquema",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Estructura que define cómo están organizados los datos."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "transaccion",
+    "title": "Transacción",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Conjunto de operaciones que se ejecutan como una unidad lógica."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "acid",
+    "title": "Propiedades ACID",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Atomicidad, Consistencia, Aislamiento, Durabilidad."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "bloqueos",
+    "title": "Bloqueos y concurrencia",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Mecanismos para evitar inconsistencias cuando varios usuarios acceden al mismo tiempo."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "relacionales",
+    "title": "Relacionales (SQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Sistemas como MySQL, PostgreSQL, Oracle."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "nosql",
+    "title": "No relacionales (NoSQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "MongoDB, Cassandra, Redis y otros que usan documentos, pares clave-valor, grafos, etc."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "otras",
+    "title": "Distribuidas y Big Data",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Data warehouse, sistemas orientados a análisis masivos y soluciones para big data."
+  },
+  {
+    "page": "index.html",
+    "id": "para-que",
+    "title": "¿Para qué sirven las bases de datos?",
+    "topic": "Inicio",
+    "snippet": "Resumen de para qué sirven las bases de datos."
+  },
+  {
+    "page": "index.html",
+    "id": "caracteristicas",
+    "title": "Características importantes",
+    "topic": "Inicio",
+    "snippet": "Confiabilidad, rendimiento, seguridad, escalabilidad y modelado de datos."
+  }
+];</script>
+<script>
+/* buscador_embedded.js - versión embebida que no usa fetch, usa SEARCH_INDEX variable */
+(() => {
+  const input = document.getElementById('glossary-search');
+  const results = document.getElementById('search-results');
+  let index = [];
+  let ready = false;
+
+  function normalize(s){
+    return s ? s.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '';
+  }
+
+  try{
+    // SEARCH_INDEX is injected below as a JSON array
+    index = (typeof SEARCH_INDEX !== 'undefined') ? SEARCH_INDEX.map(item => ({...item, _key: normalize(item.title + ' ' + item.topic + ' ' + item.snippet)})) : [];
+    ready = true;
+  }catch(e){ console.error('Index parse error', e); }
+
+  function showList(list){
+    if(!results) return;
+    results.innerHTML = '';
+    if(!list.length){ results.style.display = 'none'; return; }
+    results.style.display = 'block';
+    list.forEach(it => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.tabIndex = 0;
+      div.innerHTML = `<div><strong>${it.title}</strong></div><div class="result-meta">${it.topic} — ${it.snippet}</div>`;
+      div.addEventListener('click', ()=> goTo(it));
+      div.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') goTo(it); });
+      results.appendChild(div);
+    });
+  }
+
+  function goTo(it){
+    try{ window.location.href = it.page + '#' + it.id; }catch(e){ console.error(e); }
+    results.style.display = 'none';
+  }
+
+  function search(q){
+    if(!ready) return;
+    q = normalize(q.trim());
+    if(!q){ results.style.display='none'; return; }
+    const parts = q.split(/\s+/);
+    const matched = index.filter(item => parts.every(p => item._key.includes(p))).slice(0,50);
+    showList(matched);
+  }
+
+  function debounce(fn, ms=180){ let t; return (...a)=>{ clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
+
+  const deb = debounce((e)=> search(e.target.value), 150);
+
+  if(input){
+    input.addEventListener('input', deb);
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ results.style.display='none'; input.blur(); }
+      if(e.key === 'Enter'){ const first = results && results.querySelector('.result-item'); if(first){ first.click(); return; }
+        const q = input.value.trim().toLowerCase();
+        const exact = index.find(it => it.title.toLowerCase() === q || (it.title + ' ' + it.topic).toLowerCase() === q);
+        if(exact) goTo(exact);
+      }
+    });
+    document.addEventListener('click', (ev)=>{ if(!ev.target.closest || !ev.target.closest('#search-results') && ev.target !== input) results.style.display='none'; });
+  }
+  window.Glosario = { search };
+})();
+</script></body></html>

@@ -1,0 +1,408 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Conceptos fundamentales en Bases de Datos</title>
+<link rel="stylesheet" href="styles.css">
+
+<style>
+
+/* styles.css - shared across all pages */
+:root{
+  --orange: #ff7a2d;
+  --dark: #22303f;
+  --muted: #6c7a86;
+  --bg: #ffffff;
+  --card: #f8fafb;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, -apple-system, Roboto, 'Segoe UI', Arial; margin:0; color:var(--dark); background:var(--bg); line-height:1.5;}
+.container{max-width:1100px; margin:0 auto; padding:24px;}
+.header{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0;}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand h1{font-size:20px; margin:0; color:var(--dark);}
+.nav{display:flex; gap:12px; align-items:center;}
+.nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px;}
+.nav a:hover{background:#fff3ea; color:var(--dark);}
+
+.search-wrap{position:relative; flex:1; max-width:520px;}
+#glossary-search{width:100%; padding:10px 14px; border-radius:12px; border:1px solid #e6e9ec; box-shadow:0 1px 0 rgba(0,0,0,0.02); font-size:14px;}
+#search-results{position:absolute; left:0; right:0; top:46px; background:var(--card); border:1px solid #eee; border-radius:8px; max-height:320px; overflow:auto; z-index:40; display:none;}
+.result-item{padding:10px 12px; cursor:pointer; border-bottom:1px dashed rgba(0,0,0,0.03);}
+.result-item:last-child{border-bottom:none;}
+.result-item:hover{background:#fff3ea;}
+.result-meta{font-size:12px; color:var(--muted); margin-top:4px;}
+.hero{display:flex; align-items:center; gap:24px; padding:28px 0;}
+.hero h2{margin:0; font-size:28px; color:var(--dark);}
+.hero p.lead{margin:8px 0 0; color:var(--muted);}
+.btn-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;}
+.btn{background:var(--orange); color:white; padding:10px 14px; border-radius:12px; text-decoration:none; display:inline-block; font-weight:600; box-shadow:0 6px 18px rgba(255,122,45,0.08);}
+.grid{display:grid; grid-template-columns:1fr 320px; gap:22px; margin-top:28px;}
+.card{background:var(--card); padding:16px; border-radius:12px; box-shadow:0 6px 18px rgba(34,48,63,0.04);}
+.footer{padding:24px 0; color:var(--muted); font-size:14px; text-align:center; margin-top:36px;}
+
+/* Page content */
+.content h3{margin-top:0;}
+.section-image{width:100%; height:220px; background:linear-gradient(135deg,#fff3ea,#fffbf7); display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--dark);}
+
+.glossary-highlight{background:rgba(255,122,45,0.15); padding:2px 4px; border-radius:4px; transition:background 0.3s;}
+
+/* Responsive */
+@media (max-width:900px){
+  .hero{flex-direction:column; align-items:flex-start;}
+  .grid{grid-template-columns:1fr;}
+  #search-results{top:48px;}
+}
+
+</style>
+</head>
+<body>
+<header class="container header" role="banner">
+  <div class="brand">
+    <img src="logo.svg" alt="Logo" width="42" height="42" style="border-radius:8px;background:var(--orange);">
+    <h1>Una base de datos eficiente impulsa mejores decisiones </h1>
+  </div>
+  <div style="flex:1"></div>
+  <nav class="nav" role="navigation" aria-label="Navegación principal">
+    <a href="#" aria-current="page">Inicio</a>
+    <a href="#caracteristicas">Características</a>
+    <a href="#contacto">Contactos</a>
+    <a href="#login">Iniciar sesión</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <div style="flex:1">
+      <div class="search-wrap" aria-hidden="false">
+        <input id="glossary-search" placeholder="Buscar tema, por ejemplo: transacción, normalización..." autocomplete="off" aria-label="Buscar en el glosario">
+        <div id="search-results" role="listbox" aria-label="Resultados de búsqueda"></div>
+      </div>
+
+      <h2 style="margin-top:18px;">Conceptos fundamentales en Bases de Datos</h2>
+      <p class="lead">Aprende los conceptos claves de las bases de datos: desde modelos hasta transacciones.</p>
+      <div class="btn-row" style="margin-top:14px;">
+        <a class="btn" href="conceptos-generales.html">Conceptos generales</a>
+        <a class="btn" href="modelos-de-datos.html">Modelos de datos</a>
+        <a class="btn" href="componentes-relacional.html">Componentes de una BD relacional</a>
+        <a class="btn" href="diseno-bd.html">Diseño de base de datos</a>
+        <a class="btn" href="transacciones-concurrencia.html">Transacciones y concurrencia</a>
+        <a class="btn" href="tipos-de-bd.html">Tipos de base de datos</a>
+      </div>
+    </div>
+
+    <div style="width:320px;">
+      <div class="card" style="text-align:center;">
+        <h4>Visión rápida</h4>
+        <p class="result-meta">Explora los temas y usa el buscador para ir directamente al apartado que necesites.</p>
+      </div>
+    </div>
+  </div>
+
+  <section id="para-que" class="container content">
+    <div class="grid">
+      <div class="card">
+        <h3>¿Para qué sirven las bases de datos?</h3>
+        <p>Las bases de datos almacenan y organizan grandes cantidades de información de forma estructurada para que sea accesible, consistente y segura. Permiten:</p>
+        <ul>
+          <li>Registrar y recuperar información de forma rápida.</li>
+          <li>Mantener la integridad y coherencia de los datos mediante reglas y restricciones.</li>
+          <li>Compartir información entre usuarios y aplicaciones.</li>
+          <li>Realizar análisis y generar reportes para la toma de decisiones.</li>
+        </ul>
+        <p>Su uso es clave en prácticamente cualquier área: finanzas, salud, comercio electrónico, investigación y más.</p>
+      </div>
+      <aside class="card">
+
+        <img id="showcase-img" src="Imagenes/Bases-de-datos-relacionales.jpg" alt="Imagen destacada" loading="lazy" width="400" height="250">
+      </aside>
+    </div>
+  </section>
+
+  <section id="caracteristicas" class="container" style="margin-top:26px;">
+    <div class="card">
+      <h3>Características importantes</h3>
+      <p class="result-meta">Confiabilidad, rendimiento, seguridad, escalabilidad y modelado de datos.</p>
+      <div style="display:flex; gap:12px; margin-top:12px; flex-wrap:wrap;">
+        <div class="card" style="flex:1; min-width:220px;">Integridad referencial</div>
+        <div class="card" style="flex:1; min-width:220px;">Consultas eficientes (índices)</div>
+        <div class="card" style="flex:1; min-width:220px;">Aislamiento y durabilidad</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" style="margin-top:26px;">
+    <div class="card">
+      <h3>Contactos</h3>
+      <p>Si tienes dudas, puedes escribir a: ejemplo@correo.com</p>
+      <form id="contact-form">
+        <label>Nombre<br><input name="nombre" style="width:100%; padding:8px; margin-top:6px;"></label><br><br>
+        <label>Mensaje<br><textarea name="mensaje" style="width:100%; padding:8px; margin-top:6px;"></textarea></label><br><br>
+        <button type="submit" class="btn">Enviar</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="login" style="margin-top:26px;">
+    <div class="card">
+      <h3>Iniciar sesión</h3>
+      <p class="result-meta">Función de demostración. No hay autenticación real en este demo.</p>
+      <label>Usuario<br><input style="width:100%; padding:8px; margin-top:6px;"></label><br><br>
+      <label>Contraseña<br><input type="password" style="width:100%; padding:8px; margin-top:6px;"></label><br><br>
+      <button class="btn">Entrar</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">Proyecto educativo — Glosario de Bases de Datos</div>
+  </footer>
+</main>
+
+<script>const SEARCH_INDEX = [
+  {
+    "page": "conceptos-generales.html",
+    "id": "definiciones",
+    "title": "Definiciones clave",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "<strong>Dato</strong> → Representación de un hecho, valor o característica (ej: \"25\", \"México\"). <strong>Información</strong> → Conjunto de datos procesados que tienen significado. <strong>Base de Datos (BD)</strong> → C"
+  },
+  {
+    "page": "conceptos-generales.html",
+    "id": "usuarios",
+    "title": "Usuarios",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "Administrador de Base de Datos (DBA), Usuarios finales, Desarrolladores."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "jerarquico",
+    "title": "Modelo jerárquico",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Estructura tipo árbol donde cada registro tiene un único padre; usado en sistemas antiguos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "red",
+    "title": "Modelo de red",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Permite relaciones más complejas entre registros (grafos)."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "relacional",
+    "title": "Modelo relacional",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo más usado: los datos se organizan en tablas (relaciones) con filas y columnas."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "objetos",
+    "title": "Modelo orientado a objetos",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Combina ideas de programación orientada a objetos con almacenamiento de datos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "er",
+    "title": "Modelo entidad-relación (ER)",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo conceptual usado para representar entidades, atributos y relaciones antes del diseño físico."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tabla",
+    "title": "Tabla (relación)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Conjunto de datos organizados en filas y columnas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tupla",
+    "title": "Tupla (fila)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Registro único en la tabla."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "atributo",
+    "title": "Atributo (columna)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Característica que describe una entidad."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "pk_fk",
+    "title": "Claves (PK y FK)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Clave primaria (PK) identifica registros; Clave foránea (FK) relaciona tablas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "indices",
+    "title": "Índices y vistas",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Índice: estructura para acelerar consultas. Vista: consulta almacenada que muestra datos personalizados."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "entidad",
+    "title": "Entidad y relación",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Entidad → Objeto del mundo real representado en la BD. Relación → Asociación entre entidades."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "atributo2",
+    "title": "Atributo",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Propiedad de una entidad o relación."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "cardinalidad",
+    "title": "Cardinalidad",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Relaciones: 1:1, 1:N, N:M."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "normalizacion",
+    "title": "Normalización",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Proceso para organizar los datos y evitar redundancias (1FN, 2FN, 3FN, BCNF)."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "esquema",
+    "title": "Esquema",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Estructura que define cómo están organizados los datos."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "transaccion",
+    "title": "Transacción",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Conjunto de operaciones que se ejecutan como una unidad lógica."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "acid",
+    "title": "Propiedades ACID",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Atomicidad, Consistencia, Aislamiento, Durabilidad."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "bloqueos",
+    "title": "Bloqueos y concurrencia",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Mecanismos para evitar inconsistencias cuando varios usuarios acceden al mismo tiempo."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "relacionales",
+    "title": "Relacionales (SQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Sistemas como MySQL, PostgreSQL, Oracle."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "nosql",
+    "title": "No relacionales (NoSQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "MongoDB, Cassandra, Redis y otros que usan documentos, pares clave-valor, grafos, etc."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "otras",
+    "title": "Distribuidas y Big Data",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Data warehouse, sistemas orientados a análisis masivos y soluciones para big data."
+  },
+  {
+    "page": "index.html",
+    "id": "para-que",
+    "title": "¿Para qué sirven las bases de datos?",
+    "topic": "Inicio",
+    "snippet": "Resumen de para qué sirven las bases de datos."
+  },
+  {
+    "page": "index.html",
+    "id": "caracteristicas",
+    "title": "Características importantes",
+    "topic": "Inicio",
+    "snippet": "Confiabilidad, rendimiento, seguridad, escalabilidad y modelado de datos."
+  }
+];</script>
+<script>
+/* buscador_embedded.js - versión embebida que no usa fetch, usa SEARCH_INDEX variable */
+(() => {
+  const input = document.getElementById('glossary-search');
+  const results = document.getElementById('search-results');
+  let index = [];
+  let ready = false;
+
+  function normalize(s){
+    return s ? s.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '';
+  }
+
+  try{
+    // SEARCH_INDEX is injected below as a JSON array
+    index = (typeof SEARCH_INDEX !== 'undefined') ? SEARCH_INDEX.map(item => ({...item, _key: normalize(item.title + ' ' + item.topic + ' ' + item.snippet)})) : [];
+    ready = true;
+  }catch(e){ console.error('Index parse error', e); }
+
+  function showList(list){
+    if(!results) return;
+    results.innerHTML = '';
+    if(!list.length){ results.style.display = 'none'; return; }
+    results.style.display = 'block';
+    list.forEach(it => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.tabIndex = 0;
+      div.innerHTML = `<div><strong>${it.title}</strong></div><div class="result-meta">${it.topic} — ${it.snippet}</div>`;
+      div.addEventListener('click', ()=> goTo(it));
+      div.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') goTo(it); });
+      results.appendChild(div);
+    });
+  }
+
+  function goTo(it){
+    try{ window.location.href = it.page + '#' + it.id; }catch(e){ console.error(e); }
+    results.style.display = 'none';
+  }
+
+  function search(q){
+    if(!ready) return;
+    q = normalize(q.trim());
+    if(!q){ results.style.display='none'; return; }
+    const parts = q.split(/\s+/);
+    const matched = index.filter(item => parts.every(p => item._key.includes(p))).slice(0,50);
+    showList(matched);
+  }
+
+  function debounce(fn, ms=180){ let t; return (...a)=>{ clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
+
+  const deb = debounce((e)=> search(e.target.value), 150);
+
+  if(input){
+    input.addEventListener('input', deb);
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ results.style.display='none'; input.blur(); }
+      if(e.key === 'Enter'){ const first = results && results.querySelector('.result-item'); if(first){ first.click(); return; }
+        const q = input.value.trim().toLowerCase();
+        const exact = index.find(it => it.title.toLowerCase() === q || (it.title + ' ' + it.topic).toLowerCase() === q);
+        if(exact) goTo(exact);
+      }
+    });
+    document.addEventListener('click', (ev)=>{ if(!ev.target.closest || !ev.target.closest('#search-results') && ev.target !== input) results.style.display='none'; });
+  }
+  window.Glosario = { search };
+})();
+</script>
+</body>
+</html>

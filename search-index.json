@@ -1,0 +1,177 @@
+[
+  {
+    "page": "conceptos-generales.html",
+    "id": "definiciones",
+    "title": "Definiciones clave",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "<strong>Dato</strong> → Representación de un hecho, valor o característica (ej: \"25\", \"México\"). <strong>Información</strong> → Conjunto de datos procesados que tienen significado. <strong>Base de Datos (BD)</strong> → C"
+  },
+  {
+    "page": "conceptos-generales.html",
+    "id": "usuarios",
+    "title": "Usuarios",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "Administrador de Base de Datos (DBA), Usuarios finales, Desarrolladores."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "jerarquico",
+    "title": "Modelo jerárquico",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Estructura tipo árbol donde cada registro tiene un único padre; usado en sistemas antiguos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "red",
+    "title": "Modelo de red",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Permite relaciones más complejas entre registros (grafos)."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "relacional",
+    "title": "Modelo relacional",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo más usado: los datos se organizan en tablas (relaciones) con filas y columnas."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "objetos",
+    "title": "Modelo orientado a objetos",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Combina ideas de programación orientada a objetos con almacenamiento de datos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "er",
+    "title": "Modelo entidad-relación (ER)",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo conceptual usado para representar entidades, atributos y relaciones antes del diseño físico."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tabla",
+    "title": "Tabla (relación)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Conjunto de datos organizados en filas y columnas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tupla",
+    "title": "Tupla (fila)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Registro único en la tabla."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "atributo",
+    "title": "Atributo (columna)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Característica que describe una entidad."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "pk_fk",
+    "title": "Claves (PK y FK)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Clave primaria (PK) identifica registros; Clave foránea (FK) relaciona tablas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "indices",
+    "title": "Índices y vistas",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Índice: estructura para acelerar consultas. Vista: consulta almacenada que muestra datos personalizados."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "entidad",
+    "title": "Entidad y relación",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Entidad → Objeto del mundo real representado en la BD. Relación → Asociación entre entidades."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "atributo2",
+    "title": "Atributo",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Propiedad de una entidad o relación."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "cardinalidad",
+    "title": "Cardinalidad",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Relaciones: 1:1, 1:N, N:M."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "normalizacion",
+    "title": "Normalización",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Proceso para organizar los datos y evitar redundancias (1FN, 2FN, 3FN, BCNF)."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "esquema",
+    "title": "Esquema",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Estructura que define cómo están organizados los datos."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "transaccion",
+    "title": "Transacción",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Conjunto de operaciones que se ejecutan como una unidad lógica."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "acid",
+    "title": "Propiedades ACID",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Atomicidad, Consistencia, Aislamiento, Durabilidad."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "bloqueos",
+    "title": "Bloqueos y concurrencia",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Mecanismos para evitar inconsistencias cuando varios usuarios acceden al mismo tiempo."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "relacionales",
+    "title": "Relacionales (SQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Sistemas como MySQL, PostgreSQL, Oracle."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "nosql",
+    "title": "No relacionales (NoSQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "MongoDB, Cassandra, Redis y otros que usan documentos, pares clave-valor, grafos, etc."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "otras",
+    "title": "Distribuidas y Big Data",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Data warehouse, sistemas orientados a análisis masivos y soluciones para big data."
+  },
+  {
+    "page": "index.html",
+    "id": "para-que",
+    "title": "¿Para qué sirven las bases de datos?",
+    "topic": "Inicio",
+    "snippet": "Resumen de para qué sirven las bases de datos."
+  },
+  {
+    "page": "index.html",
+    "id": "caracteristicas",
+    "title": "Características importantes",
+    "topic": "Inicio",
+    "snippet": "Confiabilidad, rendimiento, seguridad, escalabilidad y modelado de datos."
+  }
+]

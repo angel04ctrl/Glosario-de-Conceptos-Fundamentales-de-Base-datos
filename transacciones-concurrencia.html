@@ -1,0 +1,320 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Transacciones y Concurrencia</title><link rel="stylesheet" href="styles.css">
+<style>
+
+/* styles.css - shared across all pages */
+:root{
+  --orange: #ff7a2d;
+  --dark: #22303f;
+  --muted: #6c7a86;
+  --bg: #ffffff;
+  --card: #f8fafb;
+}
+*{box-sizing:border-box}
+body{font-family:Inter, system-ui, -apple-system, Roboto, 'Segoe UI', Arial; margin:0; color:var(--dark); background:var(--bg); line-height:1.5;}
+.container{max-width:1100px; margin:0 auto; padding:24px;}
+.header{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 0;}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand h1{font-size:20px; margin:0; color:var(--dark);}
+.nav{display:flex; gap:12px; align-items:center;}
+.nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:8px;}
+.nav a:hover{background:#fff3ea; color:var(--dark);}
+
+.search-wrap{position:relative; flex:1; max-width:520px;}
+#glossary-search{width:100%; padding:10px 14px; border-radius:12px; border:1px solid #e6e9ec; box-shadow:0 1px 0 rgba(0,0,0,0.02); font-size:14px;}
+#search-results{position:absolute; left:0; right:0; top:46px; background:var(--card); border:1px solid #eee; border-radius:8px; max-height:320px; overflow:auto; z-index:40; display:none;}
+.result-item{padding:10px 12px; cursor:pointer; border-bottom:1px dashed rgba(0,0,0,0.03);}
+.result-item:last-child{border-bottom:none;}
+.result-item:hover{background:#fff3ea;}
+.result-meta{font-size:12px; color:var(--muted); margin-top:4px;}
+.hero{display:flex; align-items:center; gap:24px; padding:28px 0;}
+.hero h2{margin:0; font-size:28px; color:var(--dark);}
+.hero p.lead{margin:8px 0 0; color:var(--muted);}
+.btn-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px;}
+.btn{background:var(--orange); color:white; padding:10px 14px; border-radius:12px; text-decoration:none; display:inline-block; font-weight:600; box-shadow:0 6px 18px rgba(255,122,45,0.08);}
+.grid{display:grid; grid-template-columns:1fr 320px; gap:22px; margin-top:28px;}
+.card{background:var(--card); padding:16px; border-radius:12px; box-shadow:0 6px 18px rgba(34,48,63,0.04);}
+.footer{padding:24px 0; color:var(--muted); font-size:14px; text-align:center; margin-top:36px;}
+
+/* Page content */
+.content h3{margin-top:0;}
+.section-image{width:100%; height:220px; background:linear-gradient(135deg,#fff3ea,#fffbf7); display:flex; align-items:center; justify-content:center; border-radius:8px; color:var(--dark);}
+
+.glossary-highlight{background:rgba(255,122,45,0.15); padding:2px 4px; border-radius:4px; transition:background 0.3s;}
+
+/* Responsive */
+@media (max-width:900px){
+  .hero{flex-direction:column; align-items:flex-start;}
+  .grid{grid-template-columns:1fr;}
+  #search-results{top:48px;}
+}
+
+</style>
+</head><body>
+<header class="container header"><div class="brand"><a href="index.html" style="text-decoration:none;color:inherit;"><img src="logo.svg" alt="Logo" width="36" height="36" style="border-radius:8px;background:var(--orange);"></a><h1 style="font-size:18px;margin:0;"><a href="index.html" style="text-decoration:none;color:inherit;">Conceptos fundamentales en Bases de Datos</a></h1></div></header>
+<main class='container'><h2 style='margin-top:8px'>Transacciones y Concurrencia</h2><div class='content'>
+<section id='transaccion' class='card' style='margin-top:12px;'><h3>Transacción</h3>
+<p>Una transacción en sistemas de bases de datos es una unidad lógica de trabajo compuesta por una o varias operaciones (lecturas y escrituras) que deben ejecutarse de forma íntegra y coherente; el objetivo es que la base de datos pase de un estado consistente a otro estado consistente aunque ocurran fallos, errores o accesos concurrentes. Las transacciones facilitan la gestión de cambios porque se comportan como operaciones “todo o nada”: o bien todas las acciones se confirman (commit) y persisten en la base de datos, o bien se deshacen (rollback) dejando la base de datos exactamente como estaba antes de iniciar la transacción. Este comportamiento es esencial en aplicaciones críticas (bancos, comercio electrónico, sistemas de inventario) donde deben garantizarse la exactitud y la integridad de los datos ante fallas o accesos simultáneos.<br>
+<br>
+Referencia (APA 7):
+Gray, J., & Reuter, A. (1992). Transaction processing: Concepts and techniques. Morgan Kaufmann.</p>
+</section>
+<section id='acid' class='card' style='margin-top:12px;'><h3>Propiedades ACID</h3>
+<p>Las propiedades ACID definen las garantías básicas que debe ofrecer una transacción correcta: Atomicidad asegura que todas las operaciones dentro de la transacción se completen como un todo o se reviertan por completo; Consistencia exige que una transacción lleve a la base de datos de un estado válido a otro estado válido respetando todas las restricciones y reglas del esquema; Aislamiento garantiza que las transacciones concurrentes se ejecuten sin interferir de forma que el resultado sea equivalente al de una ejecución serial (una tras otra); y Durabilidad garantiza que, una vez que una transacción se confirma, sus efectos permanecen persistentes aun si ocurre un fallo del sistema. Estas propiedades, formalizadas y difundidas por investigadores como Jim Gray, constituyen el marco teórico que guía el diseño de mecanismos de control de concurrencia, recuperación y registro en los sistemas gestores de bases de datos.<br> <br>
+La atomicidad garantiza que una transacción se ejecute como una única unidad indivisible: o todas sus operaciones se aplican (commit) o ninguna se aplica (rollback). Si ocurre un fallo en medio de la transacción, el sistema debe deshacer todos los cambios parciales y dejar la base de datos tal como estaba antes de empezar la transacción. En la práctica esto se consigue con mecanismos de registro (write-ahead log): antes de cambiar la base de datos, el SGBD escribe en un log las operaciones que se van a realizar; si hay fallo, el sistema usa el log para revertir o completar las operaciones pendientes. <br> <br>
+La consistencia exige que una transacción lleve la base de datos de un estado válido a otro estado válido respetando todas las reglas y restricciones del esquema: claves primarias/foráneas, restricciones de unicidad, reglas de negocio, triggers, etc. No garantiza automáticamente que la aplicación haga la lógica correcta, pero sí que las restricciones declaradas (por ejemplo, que no existan pedidos sin cliente) se mantengan. Si una transacción viola una restricción, no debe poder confirmarse; el SGBD aborta la transacción y restaura el estado consistente.<br> <br>
+El aislamiento asegura que las transacciones concurrentes no interfieran entre sí de forma que el resultado final sea indistinguible de alguna ejecución serial (una por una). En la práctica existen niveles de aislamiento (ANSI SQL): Read Uncommitted, Read Committed, Repeatable Read y Serializable. Cada nivel ofrece un equilibrio distinto entre consistencia y rendimiento: por ejemplo, Read Committed evita lecturas sucias pero permite lecturas no repetibles; Serializable proporciona el nivel más fuerte (equivalente a ejecución serial) pero es más costoso. Los SGBD implementan el aislamiento mediante bloqueos (two-phase locking) o MVCC (control de concurrencia multiversión), que permiten leer versiones consistentes sin bloquear escrituras o viceversa dependiendo del diseño.<br> <br>
+La durabilidad garantiza que, una vez que una transacción ha sido confirmada (commit), sus efectos permanecerán permanentemente almacenados incluso si el sistema sufre una caída o fallo de hardware. Para lograrlo los SGBD usan técnicas como el write-ahead logging y el flush/fsync al disco: primero se asegura que el log de la transacción esté físicamente almacenado en disco antes de reportar éxito al cliente; después, el SGBD aplica los cambios a las estructuras de datos en disco y/o en memoria. En caso de reinicio, el proceso de recuperación usa el log para rehacer (redo) las transacciones confirmadas y deshacer (undo) las incompletas.</p>
+</section>
+<section id='bloqueos' class='card' style='margin-top:12px;'><h3>Bloqueos y concurrencia</h3>
+<p>El control de bloqueos y concurrencia es el conjunto de técnicas que permiten a múltiples usuarios o procesos acceder simultáneamente a la base de datos sin producir inconsistencias. Un enfoque clásico es el uso de bloqueos (locks) en niveles de granularidad diversos (fila, página, tabla) para evitar lecturas o escrituras conflictivas; por ejemplo, un bloqueo exclusivo impide que otros procesos lean o escriban el recurso mientras está en uso, y un bloqueo compartido permite lecturas concurrentes pero bloquea escrituras. Además de los bloqueos, existen mecanismos como el control de concurrencia multiversión (MVCC), esquemas de timestamp y protocolos de dos fases (2PL) que buscan maximizar rendimiento y minimizar esperas o bloqueos mutuos (deadlocks). La correcta elección y afinamiento de estas técnicas es crucial para obtener un buen rendimiento en cargas altas y para garantizar la integridad de los datos frente a accesos concurrentes.<br>
+<br>
+Referencia (APA 7):
+Bernstein, P. A., Hadzilacos, V., & Goodman, N. (1987). Concurrency control and recovery in database systems. Addison-Wesley.<br>
+(Referencia complementaria) Silberschatz, A., Korth, H. F., & Sudarshan, S. (2019). Database System Concepts (7th ed.). McGraw-Hill Education.</p>
+</section>
+<p style='margin-top:18px;'><a class='btn' href='index.html'>&larr; Volver al inicio</a></p>
+</div></main><footer class='footer'><div class='container'>Glosario — Proyecto educativo</div></footer>
+<script>const SEARCH_INDEX = [
+  {
+    "page": "conceptos-generales.html",
+    "id": "definiciones",
+    "title": "Definiciones clave",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "<strong>Dato</strong> → Representación de un hecho, valor o característica (ej: \"25\", \"México\"). <strong>Información</strong> → Conjunto de datos procesados que tienen significado. <strong>Base de Datos (BD)</strong> → C"
+  },
+  {
+    "page": "conceptos-generales.html",
+    "id": "usuarios",
+    "title": "Usuarios",
+    "topic": "Conceptos Generales - Bases de Datos",
+    "snippet": "Administrador de Base de Datos (DBA), Usuarios finales, Desarrolladores."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "jerarquico",
+    "title": "Modelo jerárquico",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Estructura tipo árbol donde cada registro tiene un único padre; usado en sistemas antiguos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "red",
+    "title": "Modelo de red",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Permite relaciones más complejas entre registros (grafos)."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "relacional",
+    "title": "Modelo relacional",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo más usado: los datos se organizan en tablas (relaciones) con filas y columnas."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "objetos",
+    "title": "Modelo orientado a objetos",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Combina ideas de programación orientada a objetos con almacenamiento de datos."
+  },
+  {
+    "page": "modelos-de-datos.html",
+    "id": "er",
+    "title": "Modelo entidad-relación (ER)",
+    "topic": "Modelos de Datos - Bases de Datos",
+    "snippet": "Modelo conceptual usado para representar entidades, atributos y relaciones antes del diseño físico."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tabla",
+    "title": "Tabla (relación)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Conjunto de datos organizados en filas y columnas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "tupla",
+    "title": "Tupla (fila)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Registro único en la tabla."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "atributo",
+    "title": "Atributo (columna)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Característica que describe una entidad."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "pk_fk",
+    "title": "Claves (PK y FK)",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Clave primaria (PK) identifica registros; Clave foránea (FK) relaciona tablas."
+  },
+  {
+    "page": "componentes-relacional.html",
+    "id": "indices",
+    "title": "Índices y vistas",
+    "topic": "Componentes de una Base de Datos Relacional",
+    "snippet": "Índice: estructura para acelerar consultas. Vista: consulta almacenada que muestra datos personalizados."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "entidad",
+    "title": "Entidad y relación",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Entidad → Objeto del mundo real representado en la BD. Relación → Asociación entre entidades."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "atributo2",
+    "title": "Atributo",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Propiedad de una entidad o relación."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "cardinalidad",
+    "title": "Cardinalidad",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Relaciones: 1:1, 1:N, N:M."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "normalizacion",
+    "title": "Normalización",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Proceso para organizar los datos y evitar redundancias (1FN, 2FN, 3FN, BCNF)."
+  },
+  {
+    "page": "diseno-bd.html",
+    "id": "esquema",
+    "title": "Esquema",
+    "topic": "Diseño de Bases de Datos",
+    "snippet": "Estructura que define cómo están organizados los datos."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "transaccion",
+    "title": "Transacción",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Conjunto de operaciones que se ejecutan como una unidad lógica."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "acid",
+    "title": "Propiedades ACID",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Atomicidad, Consistencia, Aislamiento, Durabilidad."
+  },
+  {
+    "page": "transacciones-concurrencia.html",
+    "id": "bloqueos",
+    "title": "Bloqueos y concurrencia",
+    "topic": "Transacciones y Concurrencia",
+    "snippet": "Mecanismos para evitar inconsistencias cuando varios usuarios acceden al mismo tiempo."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "relacionales",
+    "title": "Relacionales (SQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Sistemas como MySQL, PostgreSQL, Oracle."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "nosql",
+    "title": "No relacionales (NoSQL)",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "MongoDB, Cassandra, Redis y otros que usan documentos, pares clave-valor, grafos, etc."
+  },
+  {
+    "page": "tipos-de-bd.html",
+    "id": "otras",
+    "title": "Distribuidas y Big Data",
+    "topic": "Tipos de Bases de Datos",
+    "snippet": "Data warehouse, sistemas orientados a análisis masivos y soluciones para big data."
+  },
+  {
+    "page": "index.html",
+    "id": "para-que",
+    "title": "¿Para qué sirven las bases de datos?",
+    "topic": "Inicio",
+    "snippet": "Resumen de para qué sirven las bases de datos."
+  },
+  {
+    "page": "index.html",
+    "id": "caracteristicas",
+    "title": "Características importantes",
+    "topic": "Inicio",
+    "snippet": "Confiabilidad, rendimiento, seguridad, escalabilidad y modelado de datos."
+  }
+];</script>
+<script>
+/* buscador_embedded.js - versión embebida que no usa fetch, usa SEARCH_INDEX variable */
+(() => {
+  const input = document.getElementById('glossary-search');
+  const results = document.getElementById('search-results');
+  let index = [];
+  let ready = false;
+
+  function normalize(s){
+    return s ? s.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '';
+  }
+
+  try{
+    // SEARCH_INDEX is injected below as a JSON array
+    index = (typeof SEARCH_INDEX !== 'undefined') ? SEARCH_INDEX.map(item => ({...item, _key: normalize(item.title + ' ' + item.topic + ' ' + item.snippet)})) : [];
+    ready = true;
+  }catch(e){ console.error('Index parse error', e); }
+
+  function showList(list){
+    if(!results) return;
+    results.innerHTML = '';
+    if(!list.length){ results.style.display = 'none'; return; }
+    results.style.display = 'block';
+    list.forEach(it => {
+      const div = document.createElement('div');
+      div.className = 'result-item';
+      div.tabIndex = 0;
+      div.innerHTML = `<div><strong>${it.title}</strong></div><div class="result-meta">${it.topic} — ${it.snippet}</div>`;
+      div.addEventListener('click', ()=> goTo(it));
+      div.addEventListener('keydown', (e)=>{ if(e.key === 'Enter') goTo(it); });
+      results.appendChild(div);
+    });
+  }
+
+  function goTo(it){
+    try{ window.location.href = it.page + '#' + it.id; }catch(e){ console.error(e); }
+    results.style.display = 'none';
+  }
+
+  function search(q){
+    if(!ready) return;
+    q = normalize(q.trim());
+    if(!q){ results.style.display='none'; return; }
+    const parts = q.split(/\s+/);
+    const matched = index.filter(item => parts.every(p => item._key.includes(p))).slice(0,50);
+    showList(matched);
+  }
+
+  function debounce(fn, ms=180){ let t; return (...a)=>{ clearTimeout(t); t = setTimeout(()=>fn(...a), ms); }; }
+
+  const deb = debounce((e)=> search(e.target.value), 150);
+
+  if(input){
+    input.addEventListener('input', deb);
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Escape'){ results.style.display='none'; input.blur(); }
+      if(e.key === 'Enter'){ const first = results && results.querySelector('.result-item'); if(first){ first.click(); return; }
+        const q = input.value.trim().toLowerCase();
+        const exact = index.find(it => it.title.toLowerCase() === q || (it.title + ' ' + it.topic).toLowerCase() === q);
+        if(exact) goTo(exact);
+      }
+    });
+    document.addEventListener('click', (ev)=>{ if(!ev.target.closest || !ev.target.closest('#search-results') && ev.target !== input) results.style.display='none'; });
+  }
+  window.Glosario = { search };
+})();
+</script></body></html>
